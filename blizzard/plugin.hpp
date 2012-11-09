@@ -51,6 +51,10 @@ struct blz_plugin
 	virtual ~blz_plugin() throw() {}
 
 	virtual int load(const char* cfg) = 0;
+	virtual void easy_init() {}
+	virtual void easy_end() {}
+	virtual void hard_init() {}
+	virtual void hard_end() {}
 	virtual int easy(blz_task* tsk) = 0;
 	virtual int hard(blz_task* tsk) = 0;
 	virtual int idle() { return BLZ_OK; }

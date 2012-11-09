@@ -737,13 +737,19 @@ void *blizzard::event_loop_function(void *ptr)
 void *blizzard::easy_loop_function(void *ptr)
 {
 	blizzard::server *srv = (blizzard::server *) ptr;
-
+	
+	blz_plugin* plugin = srv->factory.open_plugin();
+	
 	try
 	{
+		plugin->easy_init();
+
 		while (0 == coda_terminate && 0 == coda_changecfg)
 		{
 			srv->easy_processing_loop();
 		}
+		
+		plugin->easy_end();
 	}
 	catch (const std::exception &e)
 	{
@@ -759,12 +765,18 @@ void *blizzard::hard_loop_function(void *ptr)
 {
 	blizzard::server *srv = (blizzard::server *) ptr;
 
+	blz_plugin* plugin = srv->factory.open_plugin();
+	
 	try
 	{
+		plugin->hard_init();
+
 		while (0 == coda_terminate && 0 == coda_changecfg)
 		{
 			 srv->hard_processing_loop();
 		}
+		
+		plugin->hard_end();
 	}
 	catch (const std::exception &e)
 	{

@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string>
 #include <blizzard/plugin.hpp>
+#include <coda/logger.h>
+#include <pthread.h>
 
 class blzmod_example : public blz_plugin
 {
@@ -11,6 +13,10 @@ public:
 	~blzmod_example() throw() {}
 
 	int load(const char* fname);
+	void easy_init();
+	void easy_end();
+	void hard_init();
+	void hard_end();
 	int easy(blz_task* task);
 	int hard(blz_task* task);
 };
@@ -18,6 +24,26 @@ public:
 int blzmod_example::load(const char* fname)
 {
 	return 0;
+}
+
+void blzmod_example::easy_init()
+{
+	log_notice("easy thread init, tid is %lu", ::pthread_self());
+}
+
+void blzmod_example::easy_end()
+{
+	log_notice("easy thread end, tid is %lu", ::pthread_self());
+}
+
+void blzmod_example::hard_init()
+{
+	log_notice("hard thread init, tid is %lu", ::pthread_self());
+}
+
+void blzmod_example::hard_end()
+{
+	log_notice("hard thread end, tid is %lu", ::pthread_self());
 }
 
 int blzmod_example::easy(blz_task* task)
