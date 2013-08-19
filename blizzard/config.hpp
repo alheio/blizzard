@@ -16,25 +16,21 @@ struct blz_config : public coda::txml_determination_object
 		std::string pid_file_name;
 		std::string log_file_name;
 		std::string log_level;
-		std::string access_log_file_name;
 
 		struct STATS : public coda::txml_determination_object
 		{
-			std::string ip;
-			std::string port;
+			std::string uri;
 
 			STATS() {}
 
 			void determine(coda::txml_parser* p)
 			{
-				txml_member(p, ip);
-				txml_member(p, port);
+				txml_member(p, uri);
 			}
 
 			void clear()
 			{
-				ip.clear();
-				port.clear();
+				uri.clear();
 			}
 
 			void check(const char *par, const char *ns)
@@ -42,8 +38,7 @@ struct blz_config : public coda::txml_determination_object
 				char curns [SRV_BUF];
 				snprintf(curns, SRV_BUF, "%s:%s", par, ns);
 
-				if (ip  .empty()) throw coda_error ("<%s:ip> is empty in config", curns);
-				if (port.empty()) throw coda_error ("<%s:port> is empty in config", curns);
+				if (uri.empty()) throw coda_error("<%s:uri> is empty in config", curns);
 			}
 		};
 
@@ -125,7 +120,6 @@ struct blz_config : public coda::txml_determination_object
 			txml_member(p, pid_file_name);
 			txml_member(p, log_file_name);
 			txml_member(p, log_level);
-			txml_member(p, access_log_file_name);
 			txml_member(p, stats);
 			txml_member(p, plugin);
 		}
@@ -135,7 +129,6 @@ struct blz_config : public coda::txml_determination_object
 			pid_file_name.clear();
 			log_file_name.clear();
 			log_level.clear();
-			access_log_file_name.clear();
 			stats.clear();
 			plugin.clear();
 		}

@@ -38,6 +38,9 @@ protected:
 
 	int fd;
 
+	struct ev_loop *server_loop;
+	double response_time;
+
 	bool want_read;
 	bool want_write;
 	bool can_read;
@@ -69,7 +72,6 @@ protected:
 
 	int protocol_major;
 	int protocol_minor;
-	bool keep_alive;
 	bool cache;
 
 	struct in_addr in_ip;
@@ -115,37 +117,35 @@ public:
 	void unlock();
 	bool is_locked()const;
 
-	int get_fd()const;
+	int get_fd() const;
+
+	double get_response_time() const;
 
 	void process();
 
 	http_state state()const;
 
-	int get_request_method() const;
+	/* API */
 
-	int              get_version_major()const;
-	int              get_version_minor()const;
-	bool             get_keepalive()const;
-	bool             get_cache()const;
+	int              get_request_method() const;
+	int              get_version_major() const;
+	int              get_version_minor() const;
+	bool             get_cache() const;
+	struct in_addr   get_request_ip() const;
+	const char*      get_request_uri_path() const;
+	const char*      get_request_uri_params() const;
+	size_t           get_request_body_len() const;
+	const uint8_t*   get_request_body() const;
+	const char*      get_request_header(const char *) const;
+	size_t           get_request_headers_num() const;
+	const char*      get_request_header_key(int) const;
+	const char*      get_request_header_value(int) const;
+	double           get_current_server_time() const;
 
-	struct in_addr   get_request_ip()const;
-
-	const char*      get_request_uri_path()const;
-	const char*      get_request_uri_params()const;
-
-	size_t           get_request_body_len()const;
-	const uint8_t*   get_request_body()const;
-
-	const char*      get_request_header(const char *)const;
-	size_t           get_request_headers_num()const;
-	const char*      get_request_header_key(int)const;
-	const char*      get_request_header_value(int)const;
-
-	void set_cache(bool);
-	void set_keepalive(bool);
-	void set_response_status(int);
-	void add_response_header(const char* name, const char* data);
-	void add_response_buffer(const char* data, size_t size);
+	void             set_cache(bool);
+	void             set_response_status(int);
+	void             add_response_header(const char* name, const char* data);
+	void             add_response_buffer(const char* data, size_t size);
 };
 
 }

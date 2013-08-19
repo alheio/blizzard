@@ -1,0 +1,42 @@
+blizzard (0.3.2-1) unstable; urgency=high
+
+  * fixed response_time and mem_allocator statistics
+
+ -- Sergey Bochenkov <ba4an@yandex.ru>  Fri, 09 Aug 2013 18:22:00 +0700
+
+blizzard (0.3.1-1) unstable; urgency=high
+
+  * fixed rps calculation for statistics
+
+ -- Sergey Bochenkov <ba4an@yandex.ru>  Fri, 09 Aug 2013 16:56:00 +0700
+
+blizzard (0.0.1-5) unstable; urgency=high
+
+  * fixed inifinite loop in statistics
+  * now statistics is handled in easy loop
+
+ -- unknown <bachan@sample-sandbox1g.dev.itim.vn>  Tue, 06 Aug 2013 17:14:58 +0700
+
+blizzard (0.0.1-4) unstable; urgency=low
+
+  * don't strip binary when building
+
+ -- unknown <bachan@sample-sandbox1g.dev.itim.vn>  Tue, 06 Aug 2013 15:11:58 +0700
+
+blizzard (0.0.1-3) unstable; urgency=low
+
+  * rotate_custom_logs plugin method
+
+ -- unknown <bachan@sample-sandbox2g.dev.itim.vn>  Thu, 21 Mar 2013 17:17:57 +0700
+
+blizzard (0.0.1-2) unstable; urgency=low
+
+  * removed access_log_file_name directive
+
+ -- unknown <bachan@sample-sandbox2g.dev.itim.vn>  Mon, 18 Mar 2013 11:05:46 +0700
+
+blizzard (0.0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- unknown <bachan@sample-sandbox2g.dev.itim.vn>  Fri, 01 Mar 2013 16:26:41 +0700

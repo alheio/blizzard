@@ -7,8 +7,6 @@ inline static const T& min(const T& a, const T& b)
 	return a < b ? a : b;
 }
 
-//-------------------------------------------------------------------------------------------------------------------
-
 template<int data_size>
 inline mem_chunk<data_size>::mem_chunk() : sz(0), current(0), can_expand(false), next(0)
 {
@@ -102,9 +100,9 @@ inline size_t mem_chunk<data_size>::append_data(const void * data, size_t data_s
 
 	size_t total_to_write = data_sz;
 
-	if(next)
+	if (next)
 	{
-		while(cur_page->next)
+		while (cur_page->next)
 		{
 			cur_page = cur_page->next;
 		}
@@ -115,11 +113,11 @@ inline size_t mem_chunk<data_size>::append_data(const void * data, size_t data_s
 	{
 		const uint8_t * p = static_cast<const uint8_t*>(data);
 
-		while(total_to_write)
+		while (total_to_write)
 		{
-			if(cur_page->sz >= cur_page->page_size())
+			if (cur_page->sz >= cur_page->page_size())
 			{
-				if(cur_page->can_expand)
+				if (cur_page->can_expand)
 				{
 					cur_page->insert_page();
 					cur_page = cur_page->next;
@@ -134,7 +132,7 @@ inline size_t mem_chunk<data_size>::append_data(const void * data, size_t data_s
 
 			size_t to_write = min<size_t>(data_sz, cur_page->page_size() - cur_page->sz);
 
-			 memcpy(cur_page->page + cur_page->sz, p, to_write);
+			memcpy(cur_page->page + cur_page->sz, p, to_write);
 			p += to_write;
 			data_sz -= to_write;
 
@@ -151,12 +149,11 @@ inline void mem_chunk<data_size>::print()
 {
 	int ch_n = 0;
 	mem_chunk<data_size> * cur_page = this;
-	while(cur_page)
+	while (cur_page)
 	{
 		char u[1024];
 		memset(u, 0, 1024);
 		memcpy(u, cur_page->page, cur_page->sz);
-		/* log_debug("mem_chunk[#%d](mr:%d,sz:%d)'%s'", ch_n, cur_page->current, cur_page->sz, u); */
 		cur_page = cur_page->next;
 		ch_n++;
 	}
@@ -180,11 +177,8 @@ inline bool mem_chunk<data_size>::write_to_fd(int fd, bool& can_write, bool& wan
 		if (to_write)
 		{
 			ssize_t wr = write(fd, cur_page->page + cur_page->current, to_write);
-			// log_info("wr = %d, to_write = %d, cur_page->get_data_size() = %d, errno = %d (%s)", wr, to_write, cur_page->get_data_size(), errno, coda_strerror(errno));
 			if (-1 == wr)
 			{
-				/* log_debug("process/read error: '%s'", coda_strerror(errno)); */
-
 				switch (errno)
 				{
 				case EPIPE:
@@ -193,7 +187,6 @@ inline bool mem_chunk<data_size>::write_to_fd(int fd, bool& can_write, bool& wan
 					can_write = false;
 					return false;
 				case EINTR:
-					/* log_debug("chunk/write: EINTR"); */
 					break;
 				default:
 					log_err(errno, "chunk/write error");
@@ -213,7 +206,6 @@ inline bool mem_chunk<data_size>::write_to_fd(int fd, bool& can_write, bool& wan
 			}
 			else
 			{
-				/* log_debug("chunk/write: got EOF"); */
 				can_write = false;
 				wreof = true;
 				return false;
@@ -244,27 +236,26 @@ inline bool mem_chunk<data_size>::read_from_fd(int fd, bool& can_read, bool& wan
 		
 	bool failed = true;
 
-	while(cur_page->next && (cur_page->page_size() == cur_page->get_data_size()))
+	while (cur_page->next && (cur_page->page_size() == cur_page->get_data_size()))
 	{
 		cur_page = cur_page->next;
 	}
 
-	while(true)
+	while (true)
 	{
 		ssize_t to_read = cur_page->page_size() - cur_page->get_data_size();
-		if(to_read)
+		if (to_read)
 		{
-			ssize_t    rd = read(fd, cur_page->page + cur_page->get_data_size(), to_read);
-			if(-1 == rd)
+			ssize_t rd = read(fd, cur_page->page + cur_page->get_data_size(), to_read);
+			if (-1 == rd)
 			{
-			/* log_debug("process/read error: '%s'", coda_strerror(errno)); */
-				if(EAGAIN == errno)
+				if (EAGAIN == errno)
 				{
 					can_read = false;
 
 					return true;
 				}
-				else if(EINTR != errno)
+				else if (EINTR != errno)
 				{
 					log_err(errno, "chunk/read error");
 					can_read = false;
@@ -275,13 +266,13 @@ inline bool mem_chunk<data_size>::read_from_fd(int fd, bool& can_read, bool& wan
 					log_debug("chunk/read: EINTR");
 				}
 			}
-			else if(rd)
+			else if (rd)
 			{
 				cur_page->sz += rd;
 								
 				failed = false;
 				
-				if(rd < to_read)
+				if (rd < to_read)
 				{
 					can_read = false;
 
@@ -297,16 +288,16 @@ inline bool mem_chunk<data_size>::read_from_fd(int fd, bool& can_read, bool& wan
 				return true;
 			}
 		}
-		else if(can_expand)
+		else if (can_expand)
 		{
 			insert_page();
 		}
-		else if(failed)
+		else if (failed)
 		{
 				   return false;
 		}
 
-		if(cur_page->next)
+		if (cur_page->next)
 		{
 			cur_page = cur_page->next;
 		}
@@ -318,8 +309,6 @@ inline bool mem_chunk<data_size>::read_from_fd(int fd, bool& can_read, bool& wan
 		}
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------------
 
 inline mem_block::mem_block(size_t sz) : page(0), page_capacity(0), page_sz(0), current(0)
 {
@@ -358,7 +347,7 @@ inline size_t& mem_block::marker()
 
 inline void mem_block::resize(size_t sz)
 {
-	if(page)
+	if (page)
 	{
 		delete[] page;
 
@@ -366,7 +355,7 @@ inline void mem_block::resize(size_t sz)
 		page_capacity = 0;
 	}
 
-	if(sz)
+	if (sz)
 	{
 		page = new uint8_t[sz];
 
@@ -409,7 +398,7 @@ inline size_t mem_block::append_data(const void * data, size_t data_sz)
 
 inline bool mem_block::write_to_fd(int fd, bool& can_write, bool& want_write, bool& wreof)
 {
-	while(true)
+	while (true)
 	{
 		ssize_t to_write = size() - marker();
 		if (to_write)
@@ -417,9 +406,7 @@ inline bool mem_block::write_to_fd(int fd, bool& can_write, bool& want_write, bo
 			ssize_t wr = write(fd, page + current, to_write);
 			if (-1 == wr)
 			{
-				/* log_debug("process/read error: '%s'", coda_strerror(errno)); */
-
-				switch(errno)
+				switch (errno)
 				{
 				case EPIPE:
 					wreof = true;
@@ -435,7 +422,7 @@ inline bool mem_block::write_to_fd(int fd, bool& can_write, bool& want_write, bo
 					break;
 				}
 			}
-			else if(wr)
+			else if (wr)
 			{
 				current += wr;
 
@@ -453,7 +440,6 @@ inline bool mem_block::write_to_fd(int fd, bool& can_write, bool& want_write, bo
 			}
 			else
 			{
-				/* log_debug("block/write: got EOF"); */
 				can_write = false;
 				wreof = true;
 				return false;
@@ -469,21 +455,21 @@ inline bool mem_block::write_to_fd(int fd, bool& can_write, bool& want_write, bo
 
 inline bool mem_block::read_from_fd(int fd, bool& can_read, bool& want_read, bool& rdeof)
 {
-	while(true)
+	while (true)
 	{
 		ssize_t to_read = capacity() - size();
-		if(to_read)
+		if (to_read)
 		{
-			ssize_t    rd = read(fd, page + size(), to_read);
-			if(-1 == rd)
+			ssize_t rd = read(fd, page + size(), to_read);
+			if (-1 == rd)
 			{
-				if(EAGAIN == errno)
+				if (EAGAIN == errno)
 				{
 					can_read = false;
 
 					return false;
 				}
-				else if(EINTR != errno)
+				else if (EINTR != errno)
 				{
 					log_err(errno, "block/read error");
 					can_read = false;
@@ -494,11 +480,11 @@ inline bool mem_block::read_from_fd(int fd, bool& can_read, bool& want_read, boo
 					log_debug("block/read: EINTR");
 				}
 			}
-			else if(rd)
+			else if (rd)
 			{
 				page_sz += rd;
 
-				if(rd < to_read)
+				if (rd < to_read)
 				{
 					can_read = false;
 				}
@@ -511,8 +497,6 @@ inline bool mem_block::read_from_fd(int fd, bool& can_read, bool& want_read, boo
 			}
 			else
 			{
-				/* log_debug("block/read: got EOF"); */
-
 				can_read = false;
 				rdeof = true;
 
@@ -528,6 +512,5 @@ inline bool mem_block::read_from_fd(int fd, bool& can_read, bool& want_read, boo
 	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------
 }
-//-------------------------------------------------------------------------------------------------------------------
+
