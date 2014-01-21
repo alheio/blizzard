@@ -2,7 +2,7 @@ Source: blizzard
 Section: unknown
 Priority: extra
 Maintainer: bachan <ba4an@yandex.ru>
-Build-Depends: debhelper (>= 7.0.50~), cmake
+Build-Depends: debhelper (>= 7.0.50~), cmake, libev-dev (>= 4.0), libexpat1-dev (>= 2.0), libcoda-dev
 Standards-Version: 3.8.4
 Homepage: https://github.com/bachan/blizzard
 #Vcs-Git: git://git.debian.org/collab-maint/blizzard.git
@@ -10,7 +10,7 @@ Homepage: https://github.com/bachan/blizzard
 
 Package: blizzard
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends} libev (>= 4.0), libexpat1-dev (>= 2.0), libcoda-dev
 Description: blizzard http server
  blizzard http server (two thread pools for different kind of queries)
 
