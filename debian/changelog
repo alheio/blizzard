@@ -1,3 +1,9 @@
+blizzard (0.3.2.1-1) unstable; urgency=high
+
+  * enlarge in_headers buffer 8192 -> 65536
+
+ -- Oleg Burchakov <o.burchakov@sape.ru>  Fri, 09 Aug 2013 18:22:00 +0700
+
 blizzard (0.3.2-1) unstable; urgency=high
 
   * fixed response_time and mem_allocator statistics
